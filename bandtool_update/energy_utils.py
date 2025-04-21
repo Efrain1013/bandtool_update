@@ -77,7 +77,7 @@ def fit_check(fit_ks, fit_Es, con_ks, con_Es, kpoint_values, kpoint_labels, plot
     else:
         plt.savefig("Fit_Check_VBM" + str(index) + ".png")
 
-def fit_parabola(kpoints, energies, min_kpoint_value, nkpts, kpoint_labels):
+def fit_parabola(kpoints, energies, min_kpoint_value, nkpts, kpoint_labels, ISCBM):
     min_kpoint_index = np.where(kpoints == min_kpoint_value)[0][0]
     num_of_paths = len(kpoint_labels) - 1
     kpoints_per_path = nkpts / num_of_paths
@@ -87,8 +87,18 @@ def fit_parabola(kpoints, energies, min_kpoint_value, nkpts, kpoint_labels):
     # print(upper, lower)
     fit_krange = kpoints[lower:upper]
     fit_Erange = energies[lower:upper]
+    infinity = float('inf')
 
-    fit_params, fit_cov = curve_fit(parabola, fit_krange, fit_Erange)
+    if ISCBM:
+        bound1 = [0., -infinity, -infinity, -infinity]
+        bound2 = [infinity, infinity, infinity, infinity]
+        bounds_band = [bound1, bound2]
+    else:
+        bound1 = [-infinity, -infinity, -infinity, -infinity]
+        bound2 = [0., infinity, infinity, infinity]
+        bounds_band = [bound1, bound2]
+
+    fit_params, fit_cov = curve_fit(parabola, fit_krange, fit_Erange, bounds=bounds_band)
     a_fit, b_fit, c_fit = fit_params
     fit_kpoints = np.linspace(kpoints[lower]-0.5, kpoints[upper]+0.5, 100)
     # print(fit_kpoints)

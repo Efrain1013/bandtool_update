@@ -77,6 +77,7 @@ def fit_check(fit_ks, fit_Es, con_ks, con_Es, kpoint_values, kpoint_labels, plot
     print(fit_ks, fit_Es)
 
 def fit_parabola(kpoints, energies, min_kpoint_value, nkpts, kpoint_labels, ISCBM):
+    print(f"IS THESE EVEN DOING ANYTHING WHAT THE HELL ISCBM IS: {ISCBM}")
     min_kpoint_index = np.where(kpoints == min_kpoint_value)[0][0]
     num_of_paths = len(kpoint_labels) - 1
     kpoints_per_path = nkpts / num_of_paths

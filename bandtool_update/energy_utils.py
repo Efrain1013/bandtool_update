@@ -90,15 +90,17 @@ def fit_parabola(kpoints, energies, min_kpoint_value, nkpts, kpoint_labels, ISCB
     infinity = float('inf')
 
     if ISCBM:
-        bound1 = [0., -infinity, -infinity, -infinity]
-        bound2 = [infinity, infinity, infinity, infinity]
+        bound1 = [0., -infinity, -infinity]
+        bound2 = [infinity, infinity, infinity,]
         bounds_band = [bound1, bound2]
+        guess = [2.0, 0., 0.]
     else:
         bound1 = [-infinity, -infinity, -infinity, -infinity]
         bound2 = [0., infinity, infinity, infinity]
         bounds_band = [bound1, bound2]
+        guess = [-2.0, 0., 0.]
 
-    fit_params, fit_cov = curve_fit(parabola, fit_krange, fit_Erange, bounds=bounds_band)
+    fit_params, fit_cov = curve_fit(parabola, fit_krange, fit_Erange, bounds=bounds_band, p0=guess)
     a_fit, b_fit, c_fit = fit_params
     fit_kpoints = np.linspace(kpoints[lower]-0.5, kpoints[upper]+0.5, 100)
     # print(fit_kpoints)

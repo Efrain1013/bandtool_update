@@ -21,9 +21,8 @@ def norm_energies(all_energies):
             max_val_energy = max_of_band
     
     min_con_energy = min(all_energies[con_index])
-    for i in range(con_index + 10):
-        if i > len(all_energies):
-            continue
+    
+    for i in range(con_index, min(con_index + 10, len(all_energies))):
         if -1.0E-17 < max(all_energies[i]) - max_val_energy < 1.0E-17:
             ndeg_val_bands += 1
         if -1.0E-17 < min(all_energies[i]) - min_con_energy < 1.0E-17:
@@ -35,6 +34,7 @@ def norm_energies(all_energies):
     all_energies_norm = np.array(all_energies) - vert_shift     # If max(val) is > 0 we bring it down, min(val) < 0 bring up
 
     return all_energies_norm, val_index, ndeg_val_bands, con_index, ndeg_con_bands, band_gap
+
 
 def parabola(x, a, b, c):
     return a * x ** 2 + b * x + c

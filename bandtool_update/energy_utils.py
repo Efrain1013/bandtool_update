@@ -41,7 +41,7 @@ def parabola(x, a, b, c):
 
 def fit_check(fit_ks, fit_Es, con_ks, con_Es, kpoint_values, kpoint_labels, plot_name, index, ISCBM):
     mid_k = 0.
-
+    print("We are here")
     if sum(fit_Es) > 0:
         ind = np.where(fit_Es == min(fit_Es))
         mid_k = fit_ks[ind]

@@ -95,8 +95,8 @@ def fit_parabola(kpoints, energies, min_kpoint_value, nkpts, kpoint_labels, ISCB
         bounds_band = [bound1, bound2]
         guess = [2.0, 0., 0.]
     else:
-        bound1 = [-infinity, -infinity, -infinity, -infinity]
-        bound2 = [0., infinity, infinity, infinity]
+        bound1 = [-infinity, -infinity, -infinity]
+        bound2 = [0., infinity, infinity]
         bounds_band = [bound1, bound2]
         guess = [-2.0, 0., 0.]
 

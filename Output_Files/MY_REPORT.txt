@@ -3,9 +3,16 @@ Band Gap: 1.1402510 eV
 Conduction Band Minima (CBMs):
 CBM #1:
    Band Index = 16
-   Effective Mass = -3.2028686e-30 kg = -3.5160102 m_e
-   Leading Coefficient (in parabola equation) = -1.083609502941179
+   Effective Mass = 4.8898204e-30 kg = 5.3678938 m_e
+   Leading Coefficient (in parabola equation) = 0.7097722594468509
    k-point Value at CBM = 0.57856
    CBM Location = 0.9992400690846287 on path S->M
 
 Valence Band Minima (VBMs):
+vBM #1:
+   Band Index = 15
+   Effective Mass = -2.5721256e-31 kg = -0.2823600 m_e
+   Leading Coefficient (in parabola equation) = -13.493349180638573
+   k-point Value at VBM = 0.27157
+   VBM Location = 0.4690328151986183 on path S->M
+

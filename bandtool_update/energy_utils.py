@@ -41,7 +41,6 @@ def parabola(x, a, b, c):
 
 def fit_check(fit_ks, fit_Es, con_ks, con_Es, kpoint_values, kpoint_labels, plot_name, index, ISCBM):
     mid_k = 0.
-    print("We are here")
     if sum(fit_Es) > 0:
         ind = np.where(fit_Es == min(fit_Es))
         mid_k = fit_ks[ind]
@@ -73,15 +72,13 @@ def fit_check(fit_ks, fit_Es, con_ks, con_Es, kpoint_values, kpoint_labels, plot
         plt.savefig("Fit_Check_CBM" + str(index) + ".png")
     else:
         plt.savefig("Fit_Check_VBM" + str(index) + ".png")
-    print("We got to this part")
-    print(fit_ks, fit_Es)
+    
 
 def fit_parabola(kpoints, energies, min_kpoint_value, nkpts, kpoint_labels, ISCBM):
-    print(f"IS THESE EVEN DOING ANYTHING WHAT THE HELL ISCBM IS: {ISCBM}")
     min_kpoint_index = np.where(kpoints == min_kpoint_value)[0][0]
     num_of_paths = len(kpoint_labels) - 1
     kpoints_per_path = nkpts / num_of_paths
-    num_of_points = int(kpoints_per_path // 20 - 1)
+    num_of_points = int(kpoints_per_path // 10 - 1)
     upper = int(min_kpoint_index + num_of_points + 1)
     lower = int(min_kpoint_index - num_of_points)
     # print(upper, lower)
@@ -93,21 +90,22 @@ def fit_parabola(kpoints, energies, min_kpoint_value, nkpts, kpoint_labels, ISCB
         bound1 = [0., -infinity, -infinity]
         bound2 = [infinity, infinity, infinity,]
         bounds_band = [bound1, bound2]
-        guess = [2.0, 0., 0.]
+        curvature_guess = (energies[lower] - 2*energies[min_kpoint_index] + energies[upper]) / ((kpoints[upper] - kpoints[lower])**2)
+        guess = [curvature_guess, 0., energies[min_kpoint_index]]
+
     else:
         bound1 = [-infinity, -infinity, -infinity]
         bound2 = [0., infinity, infinity]
         bounds_band = [bound1, bound2]
-        guess = [-2.0, 0., 0.]
+        curvature_guess = (energies[lower] - 2*energies[min_kpoint_index] + energies[upper]) / ((kpoints[upper] - kpoints[lower])**2)
+        guess = [curvature_guess, 0., energies[min_kpoint_index]]
 
     fit_params, fit_cov = curve_fit(parabola, fit_krange, fit_Erange, bounds=bounds_band, p0=guess)
     a_fit, b_fit, c_fit = fit_params
     fit_kpoints = np.linspace(kpoints[lower]-0.5, kpoints[upper]+0.5, 100)
-    # print(fit_kpoints)
     fit_energies = parabola(fit_kpoints, a_fit, b_fit, c_fit)
-    # print(fit_energies)
-    
-    return fit_kpoints, fit_energies, a_fit
+
+    return fit_kpoints, fit_energies, a_fit, fit_krange, fit_Erange
 
 def find_mass_eff(LC_Ek):
     d2Edk2 = 2. * LC_Ek * (1.602176634E-19) * ((1.0E-10)**2)   # Convert from LC (eVA^2) to Jm^2

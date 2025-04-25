@@ -9,30 +9,30 @@ def get_band_results(kpoints, energies, kpoint_values, kpoint_labels, con_index,
 
     for i in range(ndeg_con):
         band_index = con_index+i
-        extremum_kpoint_value, extremum_kpath_name, extremum_kpath_amount = kpath_position(kpoints[band_index], energies[band_index], kpoint_values, kpoint_labels)
+        extremum_kpoint_value, extremum_kpath_name, extremum_kpath_amount, extremum_k_index = kpath_position(kpoints[band_index], energies[band_index], kpoint_values, kpoint_labels)
         fit_kpoints, fit_energies, lead_coeff, fit_krange, fit_Erange = fit_parabola(kpoints[band_index], energies[band_index], extremum_kpoint_value, nkpts, kpoint_labels, ISCBM=1)
         fit_data = np.column_stack((fit_krange, fit_Erange))
         np.savetxt(f"Fit_Points_CBM{i}.txt", fit_data)
         fit_check(fit_kpoints, fit_energies, kpoints[band_index], energies[band_index], kpoint_values, kpoint_labels, f"Fit Check for Con Band: {i+1}", i, ISCBM=1)
         mass_eff, mass_ratio = find_mass_eff(lead_coeff)
-        results = [band_index, mass_eff, mass_ratio, lead_coeff, extremum_kpoint_value, extremum_kpath_name, extremum_kpath_amount]
+        results = [band_index, mass_eff, mass_ratio, lead_coeff, extremum_kpoint_value, extremum_kpath_name, extremum_kpath_amount, extremum_k_index]
         cbm_results.append(results)
 
     for i in range(ndeg_val):
         band_index = val_index-i
-        extremum_kpoint_value, extremum_kpath_name, extremum_kpath_amount = kpath_position(kpoints[band_index], energies[band_index], kpoint_values, kpoint_labels)
+        extremum_kpoint_value, extremum_kpath_name, extremum_kpath_amount, extremum_k_index = kpath_position(kpoints[band_index], energies[band_index], kpoint_values, kpoint_labels)
         fit_kpoints, fit_energies, lead_coeff, fit_krange, fit_Erange = fit_parabola(kpoints[band_index], energies[band_index], extremum_kpoint_value, nkpts, kpoint_labels, ISCBM=0)
         fit_data = np.column_stack((fit_krange, fit_Erange))
         np.savetxt(f"Fit_Points_VBM{i}.txt", fit_data)
         fit_check(fit_kpoints, fit_energies, kpoints[band_index], energies[band_index], kpoint_values, kpoint_labels, f"Fit Check for Val Band: {i+1}", i, ISCBM=0)
         mass_eff, mass_ratio = find_mass_eff(lead_coeff)
-        results = [band_index, mass_eff, mass_ratio, lead_coeff, extremum_kpoint_value, extremum_kpath_name, extremum_kpath_amount]
+        results = [band_index, mass_eff, mass_ratio, lead_coeff, extremum_kpoint_value, extremum_kpath_name, extremum_kpath_amount, extremum_k_index]
         vbm_results.append(results)
 
     return cbm_results, vbm_results
 
 class BandResults:
-    def __init__(self, band_index, mass_eff, mass_ratio, lead_coeff, extremum_kpoint_value, extremum_kpath_name, extremum_kpath_amount):
+    def __init__(self, band_index, mass_eff, mass_ratio, lead_coeff, extremum_kpoint_value, extremum_kpath_name, extremum_kpath_amount, extremum_k_index):
         self.band_index = band_index
         self.mass_eff = mass_eff
         self.mass_ratio = mass_ratio
@@ -40,6 +40,7 @@ class BandResults:
         self.extremum_kpoint_value = extremum_kpoint_value
         self.extremum_kpath_name = extremum_kpath_name
         self.extremum_kpath_amount = extremum_kpath_amount
+        self.extremum_k_index = extremum_k_index
 
 def build_band_extrema_list(data_list):
     """
@@ -54,6 +55,7 @@ def build_band_extrema_list(data_list):
                 extremum_kpoint_value = row[4], 
                 extremum_kpath_name = row[5], 
                 extremum_kpath_amount = row[6],
+                extremum_k_index = row[7],
                 ) for row in data_list]
 
 class TotalResults:
@@ -134,6 +136,7 @@ def write_summary_to_file(results, output_path):
                     f"   Effective Mass = {cbm.mass_eff:.7e} kg = {cbm.mass_ratio:.7f} m_e\n"
                     f"   Leading Coefficient (in parabola equation) = {cbm.lead_coeff}\n"
                     f"   k-point Value at CBM = {cbm.extremum_kpoint_value}\n"
+                    f"   Index of CBM minimum = {cbm.extremum_k_index}\n"
                     f"   CBM Location = {cbm.extremum_kpath_amount} on path {cbm.extremum_kpath_name[0]}->{cbm.extremum_kpath_name[1]}\n\n"
                     )
 
@@ -145,6 +148,7 @@ def write_summary_to_file(results, output_path):
                     f"   Effective Mass = {vbm.mass_eff:.7e} kg = {vbm.mass_ratio:.7f} m_e\n"
                     f"   Leading Coefficient (in parabola equation) = {vbm.lead_coeff}\n"
                     f"   k-point Value at VBM = {vbm.extremum_kpoint_value}\n"
+                    f"   Index of VBM minimum = {vbm.extremum_k_index}\n"
                     f"   VBM Location = {vbm.extremum_kpath_amount} on path {vbm.extremum_kpath_name[0]}->{vbm.extremum_kpath_name[1]}\n\n"
                     )
 

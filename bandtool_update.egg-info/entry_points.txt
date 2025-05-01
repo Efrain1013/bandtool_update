@@ -1,2 +1,0 @@
-[console_scripts]
-bandtool_update = bandtool_update.main:main
